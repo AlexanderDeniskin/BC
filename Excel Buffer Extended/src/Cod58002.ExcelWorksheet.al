@@ -1,7 +1,7 @@
 namespace ASD.Excel;
 using System.IO;
 using System.Utilities;
-codeunit 58003 "Excel Worksheet"
+codeunit 58002 "Excel Worksheet"
 {
     var
         ExcelBufferHelper: Codeunit "Excel Buffer Helper";

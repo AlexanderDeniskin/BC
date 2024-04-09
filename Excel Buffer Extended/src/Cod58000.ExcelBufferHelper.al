@@ -1,5 +1,5 @@
 namespace ASD.Excel;
-codeunit 58001 "Excel Buffer Helper"
+codeunit 58000 "Excel Buffer Helper"
 {
     var
         InvalidColumnCodeErr: Label '%1 is invalid Column Code.';

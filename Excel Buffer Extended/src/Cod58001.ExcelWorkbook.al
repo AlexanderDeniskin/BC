@@ -2,7 +2,7 @@ namespace ASD.Excel;
 
 using System.IO;
 using System.Utilities;
-codeunit 58002 "Excel Workbook"
+codeunit 58001 "Excel Workbook"
 {
     var
         WorkbookStyle: Codeunit "Excel Workbook Style";
