@@ -1,1 +1,1 @@
-Example, how to create ecel file with extended formation in BC cloud.
+Example, how to create an excel file with extended formating in BC cloud.
