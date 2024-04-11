@@ -214,8 +214,6 @@ codeunit 58000 "Excel Buffer Helper"
 
             xPath := StrSubstNo('./x:%1', ElementName);
 
-            //ParentXmlElement.SelectSingleNode()
-            //if SelectSingleXmlElement(WorksheetDoc, xPath, XmlEmt) then begin
             if ParentXmlElement.SelectSingleNode(XPath, XmlNamespaceManager, XmlNode) then begin
                 FoundXml := XmlNode.AsXmlElement();
                 ElementFound := true;

@@ -1195,6 +1195,11 @@ table 58000 "Excel Buffer Extended"
         AddFreezePane(1, 2);
     end;
 
+    procedure SetPageHeaderFooterSettings(DifferentOddAndEvenPages: Boolean; DifferentFirstPage: Boolean)
+    begin
+        ExcelWorksheet.SetPageHeaderFooterSettings(DifferentOddAndEvenPages, DifferentFirstPage);
+    end;
+
     procedure SetPageHeaderFooterSettings(DifferentOddAndEvenPages: Boolean; DifferentFirstPage: Boolean; ScaleWithDoc: Boolean; AlignWithMargins: Boolean)
     begin
         ExcelWorksheet.SetPageHeaderFooterSettings(DifferentOddAndEvenPages, DifferentFirstPage, ScaleWithDoc, AlignWithMargins);
@@ -1207,7 +1212,7 @@ table 58000 "Excel Buffer Extended"
 
     procedure AddPageHeaderFooter(ValueType: Enum "Excel Page HeaderFooter Type"; LeftText: Text; CenterText: Text; RightText: Text)
     begin
-        ExcelWorksheet.AddPageHeaderFooter(ValueType, StrSubstNo('&L%1%C%2&R%3', LeftText, CenterText, RightText));
+        ExcelWorksheet.AddPageHeaderFooter(ValueType, StrSubstNo('&L%1&C%2&R%3', LeftText, CenterText, RightText));
     end;
 }
 
