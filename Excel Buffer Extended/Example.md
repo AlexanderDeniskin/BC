@@ -4,6 +4,7 @@ var
     I: Integer;
     J: Integer;
 begin
+
     xlBuf.Reset();
     xlBuf.DeleteAll();
 
@@ -20,8 +21,8 @@ begin
     xlBuf."Right Border Color" := 'FF92D050';  // Green
     xlBuf."Background Color" := 'FFEEEEEE';
     xlBuf.Insert;
-    xlBuf.WriteSheet('', '', '');  // Page header is not implemented yet
-    // WriteSheet adds Xml file to zip-archive, all worksheet modifications must be made befire calling this function
+    xlBuf.WriteSheet('Test', 'Company Name', 'UserID');
+    // WriteSheet adds Xml file to a zip-archive, all worksheet modifications must be made before calling this function
 
     xlBuf.DeleteAll();
     xlBuf.AddNewSheet('Sheet2');
@@ -95,6 +96,11 @@ begin
     xlBuf.SetRowsOutlineLevel(4, 6, 1);
     xlBuf.SetRowsHidden(4, 6, true);
     xlBuf.SetRowsSummaryAbove(true);
+    // Add page header and footer
+    xlBuf.SetPageHeaderFooterSettings(false, true);
+    xlBuf.AddPageHeaderFooter("Excel Page HeaderFooter Type"::firstHeader, StrSubstNo('&L%1', UserId));  // will be displayed on the first page
+    xlBuf.AddPageHeaderFooter("Excel Page HeaderFooter Type"::oddHeader, StrSubstNo('&R%1', 'Some text'));  // will be displayed on other pages
+    xlBuf.AddPageHeaderFooter("Excel Page HeaderFooter Type"::oddFooter, 'Left', '&BCenter', 'Right');
     xlBuf.WriteSheet('', '', '');
 
 
@@ -146,7 +152,7 @@ begin
     xlBuf.SetCurrent(xlBuf."Row No.", 4);
     xlBuf.AddColumn(xlBuf."Row No." - 1, false, xlBuf."Cell Type"::Number, '');
     xlBuf.FreezeTopRow();
-    xlBuf.WriteSheet('', CompanyName, UserId);
+    xlBuf.WriteSheet('', '', UserId);
 
 
     xlBuf.CloseBook();
