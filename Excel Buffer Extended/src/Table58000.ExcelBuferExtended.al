@@ -416,6 +416,8 @@ table 58000 "Excel Buffer Extended"
 
     procedure WriteSheet(ReportHeader: Text; CompanyName2: Text; UserID2: Text)
     var
+        TypeHelper: Codeunit "Type Helper";
+        PageHeader: Text;
     begin
         /*
         XlWrkShtWriter.AddPageSetup(OrientationValues.Landscape, 9); // 9 - default value for Paper Size - A4
@@ -434,7 +436,17 @@ table 58000 "Excel Buffer Extended"
         StringBld.Append(VmlDrawingXmlTxt);
         */
 
-        //WriteAllToCurrentSheet(Rec);
+        if ReportHeader <> '' then
+            PageHeader :=
+              StrSubstNo('&C%1%2%1%3%4', GetExcelReference(1), ReportHeader, TypeHelper.LFSeparator(), CompanyName2);
+        if UserID2 <> '' then
+            PageHeader +=
+                StrSubstNo('&R%1%3%4%3%5 %2', GetExcelReference(2), GetExcelReference(3), TypeHelper.LFSeparator(), UserID2, PageTxt);
+        if PageHeader <> '' then
+            ExcelWorksheet.AddPageHeaderFooter("Excel Page HeaderFooter Type"::oddHeader, PageHeader);
+
+        //&amp;LEven page left &amp;Ceven page center&amp;REven page right
+
         ExcelWorksheet.WriteSheetData(Rec, TempRowsExcelBuf);
         ExcelWorksheet.WriteColumnsProperties(TempColumnsExcelBuf);
         ExcelWorkbook.SaveWorksheet(ExcelWorksheet);
@@ -1183,5 +1195,19 @@ table 58000 "Excel Buffer Extended"
         AddFreezePane(1, 2);
     end;
 
+    procedure SetPageHeaderFooterSettings(DifferentOddAndEvenPages: Boolean; DifferentFirstPage: Boolean; ScaleWithDoc: Boolean; AlignWithMargins: Boolean)
+    begin
+        ExcelWorksheet.SetPageHeaderFooterSettings(DifferentOddAndEvenPages, DifferentFirstPage, ScaleWithDoc, AlignWithMargins);
+    end;
+
+    procedure AddPageHeaderFooter(ValueType: Enum "Excel Page HeaderFooter Type"; Value: Text)
+    begin
+        ExcelWorksheet.AddPageHeaderFooter(ValueType, Value);
+    end;
+
+    procedure AddPageHeaderFooter(ValueType: Enum "Excel Page HeaderFooter Type"; LeftText: Text; CenterText: Text; RightText: Text)
+    begin
+        ExcelWorksheet.AddPageHeaderFooter(ValueType, StrSubstNo('&L%1%C%2&R%3', LeftText, CenterText, RightText));
+    end;
 }
 

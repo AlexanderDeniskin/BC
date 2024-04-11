@@ -47,34 +47,6 @@ codeunit 58002 "Excel Worksheet"
 
         Clear(RelationshipsDoc);
         RelationshipCreated := false;
-
-        /*
-        <autoFilter ref="A1:C1" xr:uid="{00000000-0001-0000-0000-000000000000}"/>
-        <mergeCells count="1">
-            <mergeCell ref="A2:B2"/>
-        </mergeCells>
-        <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
-        <pageSetup paperSize="9" orientation="landscape" verticalDpi="0" r:id="rId1"/>
-        */
-
-        /*
-        <worksheet
-            xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
-            xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac xr xr2 xr3"
-            xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"
-            xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision"
-            xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2"
-            xmlns:xr3="http://schemas.microsoft.com/office/spreadsheetml/2016/revision3" xr:uid="{4C0B011C-6AFB-40CE-BAE3-3E244A0E5212}">
-            <dimension ref="A1"/>
-            <sheetViews>
-                <sheetView tabSelected="1" workbookViewId="0"/>
-            </sheetViews>
-            <sheetFormatPr defaultRowHeight="15" x14ac:dyDescent="0.25"/>
-            <sheetData/>
-            <pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>
-        </worksheet>
-        */
     end;
 
     procedure GetXmlDocument(): XmlDocument
@@ -95,75 +67,50 @@ codeunit 58002 "Excel Worksheet"
 
     local procedure CreateWorksheetChildElement(NewElementName: Text) CreatedXml: XmlElement;
     var
-        FoundXml: XmlElement;
-        XmlEmt: XmlElement;
-        ElementsList: List of [Text];
-        ElementName: Text;
-        ElementFound: Boolean;
-        WkshtChildElements: Text;
-        xPath: Text;
+        WkshtElements: List of [Text];
+        WorksheetXml: XmlElement;
     begin
-        CreatedXml := XmlElement.Create(NewElementName, ExcelBufferHelper.MainNamespace());
-
-        ElementsList.Add('sheetPr');
-        ElementsList.Add('dimension');
-        ElementsList.Add('sheetViews');
-        ElementsList.Add('sheetFormatPr');
-        ElementsList.Add('cols');
-        ElementsList.Add('sheetData');
-        ElementsList.Add('sheetCalcPr');
-        ElementsList.Add('sheetProtection');
-        ElementsList.Add('protectedRanges');
-        ElementsList.Add('scenarios');
-        ElementsList.Add('autoFilter');
-        ElementsList.Add('sortState');
-        ElementsList.Add('dataConsolidate');
-        ElementsList.Add('customSheetViews');
-        ElementsList.Add('mergeCells');
-        ElementsList.Add('phoneticPr');
-        ElementsList.Add('conditionalFormatting');
-        ElementsList.Add('dataValidations');
-        ElementsList.Add('hyperlinks');
-        ElementsList.Add('printOptions');
-        ElementsList.Add('pageMargins');
-        ElementsList.Add('pageSetup');
-        ElementsList.Add('headerFooter');
-        ElementsList.Add('rowBreaks');
-        ElementsList.Add('colBreaks');
-        ElementsList.Add('customProperties');
-        ElementsList.Add('cellWatches');
-        ElementsList.Add('ignoredErrors');
-        ElementsList.Add('smartTags');
-        ElementsList.Add('drawing');
-        ElementsList.Add('legacyDrawing');
-        ElementsList.Add('legacyDrawingHF');
-        ElementsList.Add('drawingHF');
-        ElementsList.Add('picture');
-        ElementsList.Add('oleObjects');
-        ElementsList.Add('controls');
-        ElementsList.Add('webPublishItems');
-        ElementsList.Add('tableParts');
-        ElementsList.Add('extLst');
-        //ElementsList := WkshtChildElements.Split(',');
-        foreach ElementName in ElementsList do begin
-            if NewElementName = ElementName then begin
-                if ElementFound then
-                    FoundXml.AddAfterSelf(CreatedXml)
-                else begin
-                    WorksheetDoc.GetRoot(FoundXml);
-                    FoundXml.AddFirst(CreatedXml)
-                end;
-                exit;
-            end;
-
-            xPath := StrSubstNo('/x:worksheet/x:%1', ElementName);
-
-            if ExcelBufferHelper.SelectSingleXmlElement(WorksheetDoc, xPath, XmlEmt) then begin
-                FoundXml := XmlEmt;
-                ElementFound := true;
-            end;
-        end;
-        Error(ElementDoesNotExistErr, NewElementName);
+        WkshtElements.Add('sheetPr');
+        WkshtElements.Add('dimension');
+        WkshtElements.Add('sheetViews');
+        WkshtElements.Add('sheetFormatPr');
+        WkshtElements.Add('cols');
+        WkshtElements.Add('sheetData');
+        WkshtElements.Add('sheetCalcPr');
+        WkshtElements.Add('sheetProtection');
+        WkshtElements.Add('protectedRanges');
+        WkshtElements.Add('scenarios');
+        WkshtElements.Add('autoFilter');
+        WkshtElements.Add('sortState');
+        WkshtElements.Add('dataConsolidate');
+        WkshtElements.Add('customSheetViews');
+        WkshtElements.Add('mergeCells');
+        WkshtElements.Add('phoneticPr');
+        WkshtElements.Add('conditionalFormatting');
+        WkshtElements.Add('dataValidations');
+        WkshtElements.Add('hyperlinks');
+        WkshtElements.Add('printOptions');
+        WkshtElements.Add('pageMargins');
+        WkshtElements.Add('pageSetup');
+        WkshtElements.Add('headerFooter');
+        WkshtElements.Add('rowBreaks');
+        WkshtElements.Add('colBreaks');
+        WkshtElements.Add('customProperties');
+        WkshtElements.Add('cellWatches');
+        WkshtElements.Add('ignoredErrors');
+        WkshtElements.Add('smartTags');
+        WkshtElements.Add('drawing');
+        WkshtElements.Add('legacyDrawing');
+        WkshtElements.Add('legacyDrawingHF');
+        WkshtElements.Add('drawingHF');
+        WkshtElements.Add('picture');
+        WkshtElements.Add('oleObjects');
+        WkshtElements.Add('controls');
+        WkshtElements.Add('webPublishItems');
+        WkshtElements.Add('tableParts');
+        WkshtElements.Add('extLst');
+        WorksheetDoc.GetRoot(WorksheetXml);
+        Exit(ExcelBufferHelper.CreateChildElement(WkshtElements, WorksheetXml, NewElementName));
     end;
 
     procedure SetWorkbookStyle(var NewWorkbookStyle: Codeunit "Excel Workbook Style")
@@ -186,25 +133,6 @@ codeunit 58002 "Excel Worksheet"
         DialogOpened: Boolean;
         RowCreated: Boolean;
     begin
-        /*
-        ExcelBufferDialogMgt.Open(Text005);
-        LastUpdate := CurrentDateTime;
-        TotalRecNo := ExcelBuffer.Count();
-        if ExcelBuffer.FindSet() then
-            repeat
-                RecNo := RecNo + 1;
-                if not UpdateProgressDialog(ExcelBufferDialogMgt, LastUpdate, RecNo, TotalRecNo) then begin
-                    CloseBook();
-                    Error(Text035)
-                end;
-                if ExcelBuffer.Formula = '' then
-                    WriteCellValueInternal(ExcelBuffer)
-                else
-                    WriteCellFormula(ExcelBuffer)
-            until ExcelBuffer.Next() = 0;
-        ExcelBufferDialogMgt.Close();
-        */
-
         if not ExcelBufferHelper.SelectSingleXmlElement(WorksheetDoc, '/x:worksheet/x:sheetData', SheetDataXml) then
             Error(CouldNotCreateBookErr);
 
@@ -264,35 +192,7 @@ codeunit 58002 "Excel Worksheet"
             end;
 
             ExcelBuffer.SetRange("Row No.");
-
         end;
-        /*
-        if ExcelBuffer.FindSet() then begin
-            ExcelBufferDialogMgt.Open(CreatingExcelWorksheetTxt);
-            LastUpdate := CurrentDateTime;
-            TotalRecNo := ExcelBuffer.Count();
-            repeat
-                RecNo := RecNo + 1;
-                if DialogOpened then
-                    if not UpdateProgressDialog(ExcelBufferDialogMgt, LastUpdate, RecNo, TotalRecNo) then begin
-                        //CloseBook();
-                        Error(OperationCanceledErr);
-                    end;
-
-                if RowNo < ExcelBuffer."Row No." then begin
-                    RowNo := ExcelBuffer."Row No.";
-                    RowXml := XmlElement.Create('row', ExcelBufferHelper.MainNamespace);
-                    RowXml.SetAttribute('r', Format(RowNo, 0, 9));
-                    SheetDataXml.Add(RowXml);
-                end;
-                WriteCellValue(ExcelBuffer, CellXml);
-                RowXml.Add(CellXml);
-
-            until ExcelBuffer.Next() = 0;
-            if DialogOpened then
-                ExcelBufferDialogMgt.Close();
-        end;
-        */
     end;
 
     local procedure WriteCellValue(ExcelBuffer: Record "Excel Buffer Extended"; var CellXml: XmlElement)
@@ -529,7 +429,6 @@ codeunit 58002 "Excel Worksheet"
         OutlinePrXml: XmlElement;
     begin
         SheetPrXml := GetWorksheetChildElement('sheetPr');
-        ;
 
         if not ExcelBufferHelper.SelectSingleXmlElement(WorksheetDoc, '/x:worksheet/x:sheetPr/x:outlinePr', OutlinePrXml) then begin
             OutlinePrXml := XmlElement.Create('outlinePr', ExcelBufferHelper.MainNamespace);
@@ -544,7 +443,6 @@ codeunit 58002 "Excel Worksheet"
         OutlinePrXml: XmlElement;
     begin
         SheetPrXml := GetWorksheetChildElement('sheetPr');
-        ;
 
         if not ExcelBufferHelper.SelectSingleXmlElement(WorksheetDoc, '/x:worksheet/x:sheetPr/x:outlinePr', OutlinePrXml) then begin
             OutlinePrXml := XmlElement.Create('outlinePr', ExcelBufferHelper.MainNamespace);
@@ -733,7 +631,6 @@ codeunit 58002 "Excel Worksheet"
 
     procedure AddWorksheetToArchive(var ZipArchive: Codeunit "Data Compression"; SheetId: Integer; var ContentTypesDoc: XmlDocument);
     var
-        WorksheetXml: XmlElement;
         LegacyDrawingXml: XmlElement;
         RelationId: Text;
     begin
@@ -751,10 +648,7 @@ codeunit 58002 "Excel Worksheet"
             AddToArchive(ZipArchive, DrawinigDoc, StrSubstNo('xl\drawings\vmlDrawing%1.vml', SheetId));
 
             LegacyDrawingXml := GetWorksheetChildElement('legacyDrawing');
-            //LegacyDrawingXml := XmlElement.Create('legacyDrawing', ExcelBufferHelper.MainNamespace);
             LegacyDrawingXml.SetAttribute('id', 'http://schemas.openxmlformats.org/officeDocument/2006/relationships', RelationId);
-            //WorksheetDoc.GetRoot(WorksheetXml);
-            //WorksheetXml.Add(LegacyDrawingXml);
         end;
 
         if CommentsCreated then begin
@@ -942,5 +836,42 @@ codeunit 58002 "Excel Worksheet"
 
         if (FreezePaneRowNo > 1) and (FreezePaneColNo > 1) then
             SheetViewXml.Add(ExcelBufferHelper.CreateElementWithAttribute('selection', 'pane', 'bottomRight'));
+    end;
+
+    procedure SetPageHeaderFooterSettings(DifferentOddAndEvenPages: Boolean; DifferentFirstPage: Boolean)
+    var
+        HeaderFooterXml: XmlElement;
+    begin
+        HeaderFooterXml := GetWorksheetChildElement('headerFooter');
+        HeaderFooterXml.SetAttribute('differentOddEven', Format(DifferentOddAndEvenPages, 0, 2));
+        HeaderFooterXml.SetAttribute('differentFirst', Format(DifferentFirstPage, 0, 2));
+    end;
+
+    procedure SetPageHeaderFooterSettings(DifferentOddAndEvenPages: Boolean; DifferentFirstPage: Boolean; ScaleWithDoc: Boolean; AlignWithMargins: Boolean)
+    var
+        HeaderFooterXml: XmlElement;
+    begin
+        HeaderFooterXml := GetWorksheetChildElement('headerFooter');
+        HeaderFooterXml.SetAttribute('differentOddEven', Format(DifferentOddAndEvenPages, 0, 2));
+        HeaderFooterXml.SetAttribute('differentFirst', Format(DifferentFirstPage, 0, 2));
+        HeaderFooterXml.SetAttribute('scaleWithDoc', Format(ScaleWithDoc, 0, 2));
+        HeaderFooterXml.SetAttribute('alignWithMargins', Format(AlignWithMargins, 0, 2));
+    end;
+
+    procedure AddPageHeaderFooter(Type: Enum "Excel Page HeaderFooter Type"; Value: Text)
+    var
+        HeaderFooterXml: XmlElement;
+        ChildElementXml: XmlElement;
+        ChildElementName: Text;
+    begin
+        // https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.headerfooter?view=openxml-3.0.1
+        // https://learn.microsoft.com/en-us/dotnet/api/documentformat.openxml.spreadsheet.evenheader?view=openxml-3.0.1        
+
+        HeaderFooterXml := GetWorksheetChildElement('headerFooter');
+        ChildElementName := Type.Names.Get(Type.Ordinals.IndexOf(Type.AsInteger));
+        if not ExcelBufferHelper.SelectSingleXmlElement(WorksheetDoc, '/x:worksheet/x:headerFooter/x:' + ChildElementName, ChildElementXml) then
+            ChildElementXml := ExcelBufferHelper.CreateChildElement(Type.Names(), HeaderFooterXml, ChildElementName);
+        ChildElementXml.RemoveNodes();
+        ChildElementXml.Add(XmlText.Create(Value));
     end;
 }

@@ -4,6 +4,7 @@ codeunit 58000 "Excel Buffer Helper"
     var
         InvalidColumnCodeErr: Label '%1 is invalid Column Code.';
         InvalidCellAddrErr: Label '%1 is invalid cell address.';
+        ElementDoesNotExistErr: Label 'Element %1 is not valid child element for %2.';
 
     procedure GetColumnCode(ColumnId: Integer) ReturnText: Text[10];
     var
@@ -186,7 +187,42 @@ codeunit 58000 "Excel Buffer Helper"
         Exit(NewXmlElement);
     end;
 
+    procedure CreateChildElement(ElementsList: List of [Text]; ParentXmlElement: XmlElement; NewElementName: Text) CreatedXml: XmlElement;
+    var
+        XmlDoc: XmlDocument;
+        XmlNamespaceManager: XmlNamespaceManager;
+        XmlNode: XmlNode;
+        FoundXml: XmlElement;
+        ElementName: Text;
+        ElementFound: Boolean;
+        WkshtChildElements: Text;
+        xPath: Text;
+    begin
+        ParentXmlElement.GetDocument(XmlDoc);
+        InitXMLNamespaceMngr(XmlDoc, XMLNamespaceManager);
 
+        CreatedXml := XmlElement.Create(NewElementName, MainNamespace());
+
+        foreach ElementName in ElementsList do begin
+            if NewElementName = ElementName then begin
+                if ElementFound then
+                    FoundXml.AddAfterSelf(CreatedXml)
+                else
+                    ParentXmlElement.AddFirst(CreatedXml);
+                exit;
+            end;
+
+            xPath := StrSubstNo('./x:%1', ElementName);
+
+            //ParentXmlElement.SelectSingleNode()
+            //if SelectSingleXmlElement(WorksheetDoc, xPath, XmlEmt) then begin
+            if ParentXmlElement.SelectSingleNode(XPath, XmlNamespaceManager, XmlNode) then begin
+                FoundXml := XmlNode.AsXmlElement();
+                ElementFound := true;
+            end;
+        end;
+        Error(ElementDoesNotExistErr, NewElementName, ParentXmlElement.Name);
+    end;
 
     procedure MainNamespace(): Text
     var
