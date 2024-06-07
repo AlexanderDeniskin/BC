@@ -1,6 +1,6 @@
 namespace ASD.Excel;
 
-enum 50101 "Excel Page Orientation"
+enum 58003 "Excel Page Orientation"
 {
     Extensible = true;
 
